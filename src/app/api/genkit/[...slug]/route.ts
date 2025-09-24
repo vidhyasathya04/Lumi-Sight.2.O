@@ -1,7 +1,7 @@
 'use server';
 import {genkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
-import {nextJSHandler} from '@genkit-ai/next/server';
+import {nextJSHandler} from '@genkit-ai/next';
 import {z} from 'zod';
 
 import '@/ai/flows/eye-screening-analysis';
