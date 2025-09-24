@@ -39,12 +39,6 @@ export default function LanguageSelection({ onComplete }: LanguageSelectionProps
               </Button>
             ))}
           </div>
-          <div className="text-center">
-            <Button variant="ghost" className="text-muted-foreground hover:text-primary">
-              <Mic className="mr-2 h-5 w-5" />
-              Tap to speak your preferred language
-            </Button>
-          </div>
         </CardContent>
       </Card>
     </div>
