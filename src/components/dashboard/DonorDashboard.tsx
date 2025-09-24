@@ -9,7 +9,10 @@ import Link from 'next/link';
 export default function DonorDashboard() {
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-headline font-bold text-primary">🩸 Blood Donor Hub - You're a Life Saver! ❤️</h1>
+       <div className="text-center">
+        <h1 className="text-3xl font-headline font-bold text-primary">🩸 Blood Donor Hub - You're a Life Saver! ❤️</h1>
+        <p className="text-muted-foreground">First-ever chronic disease assist app with AI</p>
+      </div>
       
       <EmergencyRequestCard />
 

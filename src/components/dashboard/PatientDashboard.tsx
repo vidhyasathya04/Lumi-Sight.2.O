@@ -12,6 +12,11 @@ export default function PatientDashboard() {
 
   return (
     <div className="space-y-6">
+      <div className="text-center">
+        <h1 className="text-3xl font-headline font-bold text-primary">Patient Dashboard</h1>
+        <p className="text-muted-foreground">First-ever chronic disease assist app with AI</p>
+      </div>
+
       <Alert className="bg-destructive/10 border-destructive/50 text-destructive-foreground dark:bg-destructive/20">
         <AlarmClock className="h-5 w-5 text-destructive" />
         <AlertTitle className="text-destructive font-headline">Urgent Alert</AlertTitle>
