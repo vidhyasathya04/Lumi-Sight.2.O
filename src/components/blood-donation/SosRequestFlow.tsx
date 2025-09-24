@@ -1,22 +1,36 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Loader2, Phone, X } from 'lucide-react';
+import { Loader2, Phone, X, ShieldCheck, HeartPulse } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog';
 
-const mockDonors = [
-  { id: 1, name: 'Priya S.', avatar: 'user-avatar-1', distance: '1.2 km', bloodType: 'O+' },
-  { id: 2, name: 'Amit K.', avatar: 'user-avatar-3', distance: '2.5 km', bloodType: 'A+' },
-  { id: 3, name: 'Rohan D.', avatar: 'user-avatar-2', distance: '4.8 km', bloodType: 'B+' },
+
+type Donor = {
+    id: number;
+    name: string;
+    avatar: string;
+    distance: string;
+    bloodType: string;
+    lastDonation: string;
+    isVerified: boolean;
+};
+
+const mockDonors: Donor[] = [
+  { id: 1, name: 'Priya S.', avatar: 'user-avatar-1', distance: '1.2 km', bloodType: 'O+', lastDonation: '3 months ago', isVerified: true },
+  { id: 2, name: 'Amit K.', avatar: 'user-avatar-3', distance: '2.5 km', bloodType: 'A+', lastDonation: '7 months ago', isVerified: true },
+  { id: 3, name: 'Rohan D.', avatar: 'user-avatar-2', distance: '4.8 km', bloodType: 'B+', lastDonation: '1 year ago', isVerified: false },
 ];
 
 export default function SosRequestFlow({ onCancel }: { onCancel: () => void }) {
   const [status, setStatus] = useState('searching');
-  const [foundDonors, setFoundDonors] = useState<typeof mockDonors>([]);
+  const [foundDonors, setFoundDonors] = useState<Donor[]>([]);
+  const [selectedDonor, setSelectedDonor] = useState<Donor | null>(null);
   
   const mapImage = PlaceHolderImages.find(p => p.id === 'map-static');
 
@@ -102,10 +116,15 @@ export default function SosRequestFlow({ onCancel }: { onCancel: () => void }) {
                                     <AvatarFallback>{donor.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div className="flex-grow">
-                                    <p className="font-bold text-lg">{donor.name} ({donor.bloodType})</p>
-                                    <p className="text-sm text-muted-foreground">{donor.distance} away</p>
+                                    <p className="font-bold text-lg flex items-center gap-2">
+                                        {donor.name} ({donor.bloodType})
+                                        {donor.isVerified && <ShieldCheck className="h-5 w-5 text-green-500" title="Verified Donor" />}
+                                    </p>
+                                    <p className="text-sm text-muted-foreground">{donor.distance} away | Last donated: {donor.lastDonation}</p>
                                 </div>
-                                <Button variant="outline" size="icon"><Phone className="h-5 w-5"/></Button>
+                                <Button variant="default" size="sm" onClick={() => setSelectedDonor(donor)}>
+                                    <HeartPulse className="mr-2 h-4 w-4" /> Request
+                                </Button>
                             </Card>
                         )
                     })}
@@ -125,6 +144,41 @@ export default function SosRequestFlow({ onCancel }: { onCancel: () => void }) {
           </div>
         </CardContent>
       </Card>
+      
+      <AlertDialog open={!!selectedDonor} onOpenChange={() => setSelectedDonor(null)}>
+        <AlertDialogContent>
+            {selectedDonor && (
+                 <>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="flex items-center gap-3">
+                        <Avatar className="h-12 w-12">
+                           <AvatarImage src={PlaceHolderImages.find(p => p.id === selectedDonor.avatar)?.imageUrl} />
+                           <AvatarFallback>{selectedDonor.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        Request {selectedDonor.name}
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        You are about to send a direct request to this donor.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="py-4 text-sm space-y-2">
+                        <p><strong>Blood Type:</strong> {selectedDonor.bloodType}</p>
+                        <p><strong>Distance:</strong> {selectedDonor.distance}</p>
+                        <p><strong>Last Donation:</strong> {selectedDonor.lastDonation}</p>
+                        <p><strong>Status:</strong> {selectedDonor.isVerified ? <span className="text-green-600 font-semibold">Verified</span> : 'Not Verified'}</p>
+                    </div>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel onClick={() => setSelectedDonor(null)}>Cancel</AlertDialogCancel>
+                      <AlertDialogAction className="bg-primary hover:bg-primary/90" onClick={() => setSelectedDonor(null)}>
+                        Send Direct Request
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                </>
+            )}
+        </AlertDialogContent>
+      </AlertDialog>
+
     </div>
   );
 }
+
