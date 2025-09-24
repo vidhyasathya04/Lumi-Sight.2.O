@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useUser } from '@/context/UserContext';
-import LanguageSelection from '@/components/onboarding/LanguageSelection';
-import UserTypeSelection from '@/components/onboarding/UserTypeSelection';
+import UserTypeSelection from '@/components/onboarding/UserType-selection';
 import RegistrationForm from '@/components/onboarding/RegistrationForm';
 import { AnimatePresence, motion } from 'framer-motion';
 import WelcomeStep from '@/components/onboarding/WelcomeStep';
 import { useRouter } from 'next/navigation';
-import MainFeaturesPage from '@/components/onboarding/MainFeaturesPage';
 
 export default function OnboardingPage() {
   const { user } = useUser();
@@ -32,13 +30,9 @@ export default function OnboardingPage() {
       case 1:
         return <WelcomeStep key="step1" onComplete={nextStep} />;
       case 2:
-        return <LanguageSelection key="step2" onComplete={nextStep} />;
+        return <UserTypeSelection key="step2" onComplete={nextStep} />;
       case 3:
-        return <MainFeaturesPage key="step3" onComplete={nextStep} />;
-      case 4:
-        return <UserTypeSelection key="step4" onComplete={nextStep} />;
-      case 5:
-        return <RegistrationForm key="step5" />;
+        return <RegistrationForm key="step3" />;
       default:
         return <WelcomeStep key="step1" onComplete={nextStep} />;
     }

@@ -3,12 +3,22 @@
 import { Button } from '@/components/ui/button';
 import { Logo } from '../icons/logo';
 import { motion } from 'framer-motion';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Globe } from 'lucide-react';
+import { useUser } from '@/context/UserContext';
+import { LANGUAGES } from '@/lib/constants';
 
 interface WelcomeStepProps {
   onComplete: () => void;
 }
 
 export default function WelcomeStep({ onComplete }: WelcomeStepProps) {
+  const { user, setUser } = useUser();
+
+  const handleLanguageSelect = (lang: string) => {
+    setUser({ ...user, language: lang });
+  };
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -47,6 +57,24 @@ export default function WelcomeStep({ onComplete }: WelcomeStepProps) {
 
   return (
     <div className="flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-green-50">
+      <div className="absolute top-4 right-4">
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                    <Globe className="mr-2 h-4 w-4" />
+                    {user?.language || 'English'}
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                {LANGUAGES.map(lang => (
+                    <DropdownMenuItem key={lang} onClick={() => handleLanguageSelect(lang)}>
+                        {lang}
+                    </DropdownMenuItem>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
       <motion.div
         className="text-center p-8 flex flex-col items-center"
         variants={containerVariants}
@@ -71,7 +99,7 @@ export default function WelcomeStep({ onComplete }: WelcomeStepProps) {
         </motion.h2>
 
         <motion.p variants={itemVariants} className="mt-4 text-lg text-muted-foreground">
-          Start your health journey now. Choose your language to begin.
+          Start your health journey now.
         </motion.p>
 
         <motion.div
