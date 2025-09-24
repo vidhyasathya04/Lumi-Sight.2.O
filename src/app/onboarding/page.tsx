@@ -11,12 +11,8 @@ import WelcomeStep from '@/components/onboarding/WelcomeStep';
 export default function OnboardingPage() {
   const { user } = useUser();
 
-  const getInitialStep = () => {
-    // Always start at the welcome step for a new session.
-    return 1;
-  };
-
-  const [step, setStep] = useState(getInitialStep());
+  // Always start at the welcome step for a new session.
+  const [step, setStep] = useState(1);
 
   const nextStep = () => setStep(s => s + 1);
 
