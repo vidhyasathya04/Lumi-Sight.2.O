@@ -22,7 +22,7 @@ function SchedulingTab() {
                     <PlusCircle className="text-primary"/>
                     Create a Future Blood Request
                 </CardTitle>
-                <CardDescription>Schedule a request for a planned procedure like dialysis.</CardDescription>
+                <CardDescription>Schedule requests for planned procedures. We prioritize recurring needs for patients with conditions like Thalassemia or those undergoing dialysis.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 <Input placeholder="Patient Name" />
