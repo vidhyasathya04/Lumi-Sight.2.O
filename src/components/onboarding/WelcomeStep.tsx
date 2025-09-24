@@ -7,6 +7,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Globe } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { LANGUAGES } from '@/lib/constants';
+import { useTranslation } from '@/hooks/use-translation';
 
 interface WelcomeStepProps {
   onComplete: () => void;
@@ -14,9 +15,10 @@ interface WelcomeStepProps {
 
 export default function WelcomeStep({ onComplete }: WelcomeStepProps) {
   const { user, setUser } = useUser();
+  const { t, currentLanguage, setLanguage } = useTranslation();
 
   const handleLanguageSelect = (lang: string) => {
-    setUser({ ...user, language: lang });
+    setLanguage(lang);
   };
   
   const containerVariants = {
@@ -62,7 +64,7 @@ export default function WelcomeStep({ onComplete }: WelcomeStepProps) {
             <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
                     <Globe className="mr-2 h-4 w-4" />
-                    {user?.language || 'English'}
+                    {currentLanguage}
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -95,11 +97,11 @@ export default function WelcomeStep({ onComplete }: WelcomeStepProps) {
           variants={itemVariants}
           className="mt-4 text-xl md:text-2xl font-headline font-bold text-gray-800"
         >
-          The first-ever app dedicated to helping patients with chronic diseases.
+          {t('welcome_subtitle')}
         </motion.h2>
 
         <motion.p variants={itemVariants} className="mt-4 text-lg text-muted-foreground">
-          Start your health journey now.
+          {t('welcome_tagline')}
         </motion.p>
 
         <motion.div
@@ -109,7 +111,7 @@ export default function WelcomeStep({ onComplete }: WelcomeStepProps) {
           className="mt-10"
         >
           <Button size="lg" className="h-14 px-10 text-lg font-headline rounded-full shadow-lg" onClick={onComplete}>
-            Start
+            {t('start_button')}
           </Button>
         </motion.div>
       </motion.div>

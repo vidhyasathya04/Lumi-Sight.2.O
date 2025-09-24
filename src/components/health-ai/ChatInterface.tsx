@@ -1,4 +1,3 @@
-
 'use client';
 
 import { getPersonalizedHealthAdvice } from '@/ai/flows/personalized-health-advice';
@@ -11,25 +10,11 @@ import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Bot, Loader2, Send, User as UserIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '../ui/scroll-area';
+import { useTranslation } from '@/hooks/use-translation';
 
 type Message = {
   sender: 'user' | 'ai';
   text: string;
-};
-
-const languageGreetings = {
-  'English': 'Hello! I\'m your health assistant. What would you like to know?',
-  'हिंदी (Hindi)': 'नमस्ते! मैं आपका स्वास्थ्य सहायक हूं। आप क्या जानना चाहते हैं?',
-  'বাংলা (Bengali)': 'নমস্কার! আমি আপনার স্বাস্থ্য সহায়ক। আপনি কি জানতে চান?',
-  'తెలుగు (Telugu)': 'నమస్కారం! నేను మీ ఆరోగ్య సహాయకుడిని. మీరు ఏమి తెలుసుకోవాలనుకుంటున్నారు?',
-  'मराठी (Marathi)': 'नमस्कार! मी तुमचा आरोग्य सहाय्यक आहे. तुम्हाला काय जाणून घ्यायचे आहे?',
-  'தமிழ் (Tamil)': 'வணக்கம்! நான் உங்கள் சுகாதார உதவியாளர். என்ன தெரிந்து கொள்ள விரும்புகிறீர்கள்?',
-  'ગુજરાતી (Gujarati)': 'નમસ્તે! હું તમારો સ્વાસ્થ્ય સહાયક છું. તમે શું જાણવા માંગો છો?',
-  'ಕನ್ನಡ (Kannada)': 'ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಆರೋಗ್ಯ ಸಹಾಯಕ. ನೀವು ಏನು ತಿಳಿಯಲು ಬಯಸುತ್ತೀರಿ?',
-  'ଓଡ଼ିଆ (Odia)': 'ନମସ୍କାର! ମୁଁ ଆପଣଙ୍କର ସ୍ୱାସ୍ଥ୍ୟ ସହାୟକ। ଆପଣ କଣ ଜାଣିବାକୁ ଚାହାଁନ୍ତି?',
-  'മലയാളം (Malayalam)': 'നമസ്കാരം! ഞാൻ നിങ്ങളുടെ ആരോഗ്യ സഹായിയാണ്. നിങ്ങൾക്കെന്താണ് അറിയേണ്ടത്?',
-  'ਪੰਜਾਬੀ (Punjabi)': 'ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਤੁਹਾਡਾ ਸਿਹਤ ਸਹਾਇਕ ਹਾਂ। ਤੁਸੀਂ ਕੀ ਜਾਣਨਾ ਚਾਹੁੰਦੇ ਹੋ?',
-  'اردو (Urdu)': 'ہیلو! میں آپ کا ہیلتھ اسسٹنٹ ہوں۔ آپ کیا جاننا چاہیں گے؟',
 };
 
 export default function ChatInterface() {
@@ -38,15 +23,15 @@ export default function ChatInterface() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const { t, currentLanguage } = useTranslation();
 
   useEffect(() => {
-    const greeting = languageGreetings[user?.language as keyof typeof languageGreetings] || languageGreetings['English'];
-    setMessages([{ sender: 'ai', text: greeting }]);
-  }, [user?.language]);
+    setMessages([{ sender: 'ai', text: t('ai_greeting') }]);
+  }, [currentLanguage, t]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
+      scrollAreaRef.current.scrollTo({ top: scrollArea_ref.current.scrollHeight, behavior: 'smooth' });
     }
   }, [messages]);
 
@@ -71,13 +56,13 @@ export default function ChatInterface() {
           lastEyeCheckup: user.lastEyeCheckup || 'unknown',
           willingToDonateBlood: user.willingToDonateBlood || 'maybe',
         },
-        language: user.language || 'English',
+        language: currentLanguage,
       });
       const aiMessage: Message = { sender: 'ai', text: response.advice };
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       console.error('AI advice error:', error);
-      const errorMessage: Message = { sender: 'ai', text: 'Sorry, I encountered an error. Please try again.' };
+      const errorMessage: Message = { sender: 'ai', text: t('ai_error') };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
@@ -88,9 +73,9 @@ export default function ChatInterface() {
     <Card className="w-full max-w-4xl mx-auto flex flex-col h-[calc(100vh-10rem)] shadow-lg">
       <CardHeader>
         <CardTitle className="font-headline text-2xl flex items-center gap-2">
-            <Bot className="text-primary" /> Ask Health AI
+            <Bot className="text-primary" /> {t('ask_health_ai_title')}
         </CardTitle>
-        <CardDescription>Your personal AI health assistant.</CardDescription>
+        <CardDescription>{t('ask_health_ai_description')}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden">
         <ScrollArea className="h-full pr-4" ref={scrollAreaRef}>
@@ -131,7 +116,7 @@ export default function ChatInterface() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyPress={e => e.key === 'Enter' && handleSend()}
-            placeholder="Ask a health question..."
+            placeholder={t('ask_health_question_placeholder')}
             className="pr-12"
             disabled={isLoading}
           />

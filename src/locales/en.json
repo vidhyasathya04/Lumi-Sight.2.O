@@ -1,0 +1,18 @@
+{
+  "welcome_subtitle": "The first-ever app dedicated to helping patients with chronic diseases.",
+  "welcome_tagline": "Start your health journey now.",
+  "start_button": "Start",
+  "user_type_title": "How will you use LumiSight?",
+  "user_type_description": "Select your primary role to personalize your experience.",
+  "patient": "Patient",
+  "blood_donor": "Blood Donor",
+  "healthcare_provider": "Healthcare Provider",
+  "user_type_patient_desc": "I need care",
+  "user_type_donor_desc": "I want to help",
+  "user_type_provider_desc": "I am a provider",
+  "ai_greeting": "Hello! I'm your health assistant. What would you like to know?",
+  "ai_error": "Sorry, I encountered an error. Please try again.",
+  "ask_health_ai_title": "Ask Health AI",
+  "ask_health_ai_description": "Your personal AI health assistant.",
+  "ask_health_question_placeholder": "Ask a health question..."
+}

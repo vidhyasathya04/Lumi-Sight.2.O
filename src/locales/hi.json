@@ -1,0 +1,19 @@
+
+{
+  "welcome_subtitle": "दीर्घकालिक बीमारियों वाले रोगियों की मदद के लिए समर्पित पहला ऐप।",
+  "welcome_tagline": "अपनी स्वास्थ्य यात्रा अभी शुरू करें।",
+  "start_button": "शुरू करें",
+  "user_type_title": "आप LumiSight का उपयोग कैसे करेंगे?",
+  "user_type_description": "अपने अनुभव को व्यक्तिगत बनाने के लिए अपनी प्राथमिक भूमिका चुनें।",
+  "patient": "मरीज़",
+  "blood_donor": "रक्त दाता",
+  "healthcare_provider": "स्वास्थ्य सेवा प्रदाता",
+  "user_type_patient_desc": "मुझे देखभाल चाहिए",
+  "user_type_donor_desc": "मैं मदद करना चाहता हूं",
+  "user_type_provider_desc": "मैं एक प्रदाता हूं",
+  "ai_greeting": "नमस्ते! मैं आपका स्वास्थ्य सहायक हूं। आप क्या जानना चाहते हैं?",
+  "ai_error": "क्षमा करें, मुझे एक त्रुटि का सामना करना पड़ा। कृपया पुनः प्रयास करें।",
+  "ask_health_ai_title": "स्वास्थ्य AI से पूछें",
+  "ask_health_ai_description": "आपका व्यक्तिगत AI स्वास्थ्य सहायक।",
+  "ask_health_question_placeholder": "स्वास्थ्य संबंधी प्रश्न पूछें..."
+}
