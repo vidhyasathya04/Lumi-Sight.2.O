@@ -12,18 +12,13 @@ export default function OnboardingPage() {
   const { user } = useUser();
 
   const getInitialStep = () => {
-    // Always start at the welcome step for a new session if no language is set.
-    // This logic can be adjusted based on how persistent you want the "skip" to be.
-    if (!user?.language) return 1;
-    if (!user?.userType) return 3; // Skip welcome and lang
-    if (!user?.name) return 4; // Skip to form
-    return 1; // Default to welcome
+    // Always start at the welcome step for a new session.
+    return 1;
   };
 
   const [step, setStep] = useState(getInitialStep());
 
   const nextStep = () => setStep(s => s + 1);
-  const skipToForm = () => setStep(4);
 
   const renderStep = () => {
     switch (step) {
@@ -36,10 +31,8 @@ export default function OnboardingPage() {
       case 4:
         return <RegistrationForm key="step4" />;
       default:
-        // This handles re-entry for partially completed profiles
-        if (!user?.language) return <LanguageSelection key="step2" onComplete={nextStep} />;
-        if (!user?.userType) return <UserTypeSelection key="step3" onComplete={nextStep} />;
-        return <RegistrationForm key="step4" />;
+        // Default to welcome step if something goes wrong
+        return <WelcomeStep key="step1" onComplete={nextStep} />;
     }
   };
 
