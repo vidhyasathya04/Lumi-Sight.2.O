@@ -24,21 +24,9 @@ export default function Home() {
       }
     }, 2500); // Wait for animation to have some time
 
-    // If the user data is loaded before the timeout, we can redirect immediately.
-    if (!isLoading) {
-       // but we still want a minimum splash time
-       // so this part is commented out to enforce animation
-      // clearTimeout(timer);
-      // if (user?.userType && user?.name) {
-      //   router.replace('/dashboard');
-      // } else {
-      //   router.replace('/onboarding');
-      // }
-    }
-
     return () => clearTimeout(timer);
-    // We only want this to run once on mount to show the animation,
-    // then decide where to go.
+    // By including all dependencies, we ensure the effect re-evaluates correctly
+    // but the timeout logic inside handles the timing.
   }, [user, isLoading, router]);
 
   const appName = "LumiSight";
