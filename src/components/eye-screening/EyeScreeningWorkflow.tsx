@@ -297,10 +297,12 @@ ${result.rightEyeAnalysis}
     a.href = url;
     a.download = 'LumiSight-Eye-Screening-Report.txt';
     document.body.appendChild(a);
-    a.click();
+a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+
+  const severityLevels = ['Normal', 'Mild', 'Moderate', 'Advanced', 'Severe'];
 
   return (
     <div className="space-y-6">
@@ -311,9 +313,9 @@ ${result.rightEyeAnalysis}
         <CardContent>
           <ChartContainer config={chartConfig} className="h-[200px] w-full">
             <BarChart accessibilityLayer data={chartData} margin={{ top: 20, left: -20, right: 20 }}>
-              <CartesianGrid vertical={false} />
+              <CartesianGrid vertical={true} horizontal={true} />
               <XAxis dataKey="eye" tickLine={false} tickMargin={10} axisLine={false} />
-              <YAxis domain={[0, 4]} ticks={[0, 1, 2, 3]} tickFormatter={(value) => ['Normal', 'Mild', 'Moderate', 'Advanced'][value]} />
+              <YAxis domain={[0, 4]} ticks={[0, 1, 2, 3]} tickFormatter={(value) => severityLevels[value]} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="severity" radius={8} />
             </BarChart>
