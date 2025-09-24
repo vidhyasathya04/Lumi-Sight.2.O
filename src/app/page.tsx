@@ -12,17 +12,33 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading) {
-      const timer = setTimeout(() => {
+    // This timer ensures the splash screen and animation are visible for a moment.
+    const timer = setTimeout(() => {
+      // We check isLoading here to ensure we don't redirect before user state is determined.
+      if (!isLoading) {
         if (user?.userType && user?.name) {
           router.replace('/dashboard');
         } else {
           router.replace('/onboarding');
         }
-      }, 2500); // Wait for animation to have some time
+      }
+    }, 2500); // Wait for animation to have some time
 
-      return () => clearTimeout(timer);
+    // If the user data is loaded before the timeout, we can redirect immediately.
+    if (!isLoading) {
+       // but we still want a minimum splash time
+       // so this part is commented out to enforce animation
+      // clearTimeout(timer);
+      // if (user?.userType && user?.name) {
+      //   router.replace('/dashboard');
+      // } else {
+      //   router.replace('/onboarding');
+      // }
     }
+
+    return () => clearTimeout(timer);
+    // We only want this to run once on mount to show the animation,
+    // then decide where to go.
   }, [user, isLoading, router]);
 
   const appName = "LumiSight";
