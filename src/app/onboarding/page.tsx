@@ -1,18 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useUser } from '@/context/UserContext';
 import LanguageSelection from '@/components/onboarding/LanguageSelection';
 import UserTypeSelection from '@/components/onboarding/UserTypeSelection';
 import RegistrationForm from '@/components/onboarding/RegistrationForm';
 import { AnimatePresence, motion } from 'framer-motion';
 import WelcomeStep from '@/components/onboarding/WelcomeStep';
+import { useRouter } from 'next/navigation';
+import MainFeaturesPage from '@/components/onboarding/MainFeaturesPage';
 
 export default function OnboardingPage() {
   const { user } = useUser();
+  const router = useRouter();
 
   // Always start at the welcome step for a new session.
   const [step, setStep] = useState(1);
+
+  // If a user profile is complete, redirect to dashboard.
+  useEffect(() => {
+    if (user?.name && user?.userType) {
+      router.replace('/dashboard');
+    }
+  }, [user, router]);
+
 
   const nextStep = () => setStep(s => s + 1);
 
@@ -21,13 +32,14 @@ export default function OnboardingPage() {
       case 1:
         return <WelcomeStep key="step1" onComplete={nextStep} />;
       case 2:
-        return <UserTypeSelection key="step2" onComplete={nextStep} />;
+        return <MainFeaturesPage key="step2" onComplete={nextStep} />;
       case 3:
-        return <LanguageSelection key="step3" onComplete={nextStep} />;
+        return <UserTypeSelection key="step3" onComplete={nextStep} />;
       case 4:
-        return <RegistrationForm key="step4" />;
+        return <LanguageSelection key="step4" onComplete={nextStep} />;
+      case 5:
+        return <RegistrationForm key="step5" />;
       default:
-        // Default to welcome step if something goes wrong
         return <WelcomeStep key="step1" onComplete={nextStep} />;
     }
   };
@@ -40,7 +52,7 @@ export default function OnboardingPage() {
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -50 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.5 }}
           className="w-full"
         >
           {renderStep()}

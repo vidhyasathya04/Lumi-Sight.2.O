@@ -3,11 +3,24 @@ import { UserProvider } from '@/context/UserContext';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 import { cn } from '@/lib/utils';
+import { Poppins, PT_Sans } from 'next/font/google';
 
 export const metadata: Metadata = {
   title: 'LumiSight',
   description: 'Integrated healthcare for diabetic screening and blood donation.',
 };
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+  variable: '--font-poppins',
+});
+
+const ptSans = PT_Sans({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-pt-sans',
+});
 
 export default function RootLayout({
   children,
@@ -16,12 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className={cn('font-body antialiased', 'min-h-screen bg-background')}>
+      <body className={cn('min-h-screen bg-background font-body antialiased', poppins.variable, ptSans.variable)}>
         <UserProvider>
           {children}
           <Toaster />
