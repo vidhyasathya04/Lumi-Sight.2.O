@@ -6,9 +6,17 @@ import { Button } from '@/components/ui/button';
 import { AlarmClock, Eye, HandHeart, Hospital, MessageCircle, HeartPulse, ShieldCheck } from 'lucide-react';
 import StatCard from './StatCard';
 import Link from 'next/link';
+import { useState } from 'react';
+import SosRequestFlow from '../blood-donation/SosRequestFlow';
 
 export default function PatientDashboard() {
   const { user } = useUser();
+  const [isRequestingSos, setIsRequestingSos] = useState(false);
+
+  if (isRequestingSos) {
+    return <SosRequestFlow onCancel={() => setIsRequestingSos(false)} />;
+  }
+
 
   return (
     <div className="space-y-6">
@@ -23,8 +31,8 @@ export default function PatientDashboard() {
         <AlertDescription className="flex items-center justify-between">
           <div>Your next eye screening is due in 5 days.</div>
           <div className="flex gap-2 mt-2 sm:mt-0">
-            <Button size="sm" asChild className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">
-                <Link href="/dashboard/eye-screening">Schedule Now</Link>
+            <Button size="sm" onClick={() => setIsRequestingSos(true)} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">
+                Schedule Now
             </Button>
             <Button size="sm" variant="outline" className="border-destructive text-destructive hover:bg-destructive/10">Remind Me Later</Button>
           </div>
