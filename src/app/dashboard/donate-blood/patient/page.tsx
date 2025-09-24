@@ -3,9 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Calendar, Droplet, History, Mic, PlusCircle, User } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUser } from "@/context/UserContext";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { HealthStatCard } from "@/components/blood-donation/HealthStatCard";
 import { Input } from "@/components/ui/input";
@@ -96,7 +94,6 @@ function AiAssistantTab() {
 
 export default function PatientDashboardPage() {
     const { user } = useUser();
-    const avatarImage = PlaceHolderImages.find(p => p.id === 'user-avatar-2');
     const [isRequestingSos, setIsRequestingSos] = useState(false);
 
     if (isRequestingSos) {
@@ -114,10 +111,9 @@ export default function PatientDashboardPage() {
                 </div>
                  <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Avatar className="h-12 w-12 cursor-pointer border-2 border-red-500/50">
-                            {avatarImage && <AvatarImage src={avatarImage.imageUrl} />}
-                            <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
-                        </Avatar>
+                         <Button variant="ghost" size="icon" className="rounded-full h-12 w-12 border-2 border-red-500/50">
+                            <User className="h-6 w-6" />
+                        </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56" align="end">
                         <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>

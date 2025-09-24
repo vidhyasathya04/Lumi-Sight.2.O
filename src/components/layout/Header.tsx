@@ -19,7 +19,6 @@ import { useRouter } from 'next/navigation';
 export default function Header() {
   const { user, setUser } = useUser();
   const router = useRouter();
-  const avatarImage = PlaceHolderImages.find(p => p.id === 'user-avatar-1');
 
   const handleLogout = () => {
     setUser(null);
@@ -52,11 +51,8 @@ export default function Header() {
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-              <Avatar className="h-9 w-9">
-                {avatarImage && <AvatarImage src={avatarImage.imageUrl} alt={user?.name || ''} />}
-                <AvatarFallback>{user?.name?.charAt(0).toUpperCase()}</AvatarFallback>
-              </Avatar>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <User className="h-5 w-5" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end" forceMount>

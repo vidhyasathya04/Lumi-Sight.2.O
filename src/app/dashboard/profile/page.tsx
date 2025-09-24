@@ -2,14 +2,11 @@
 
 import { useUser } from '@/context/UserContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
-import { Edit } from 'lucide-react';
+import { Edit, User as UserIcon } from 'lucide-react';
 
 export default function ProfilePage() {
   const { user } = useUser();
-  const avatarImage = PlaceHolderImages.find(p => p.id === 'user-avatar-1');
   
   if (!user) {
     return null;
@@ -29,10 +26,9 @@ export default function ProfilePage() {
     <div className="container mx-auto py-8">
       <Card className="w-full max-w-2xl mx-auto shadow-lg">
         <CardHeader className="items-center text-center relative">
-          <Avatar className="w-24 h-24 mb-4 border-4 border-primary/50">
-            {avatarImage && <AvatarImage src={avatarImage.imageUrl} alt={user.name || 'User'} />}
-            <AvatarFallback className="text-3xl">{user.name?.charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
+          <div className="p-4 bg-primary/10 rounded-full mb-4">
+            <UserIcon className="w-16 h-16 text-primary" />
+          </div>
           <CardTitle className="text-3xl font-headline">{user.name}</CardTitle>
           <CardDescription>{user.userType}</CardDescription>
           <Button variant="outline" size="icon" className="absolute top-4 right-4">
