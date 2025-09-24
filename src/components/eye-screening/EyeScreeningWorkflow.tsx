@@ -9,6 +9,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle, Eye, Lightbulb, Loader2, Upload, XCircle, Download, UserCheck, RefreshCw, AlertTriangle, MonitorSmartphone } from 'lucide-react';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
+
 
 type Step = 'checklist' | 'upload-left' | 'upload-right' | 'analyze' | 'results';
 const STEPS = {
@@ -234,22 +237,36 @@ const Analysis = ({ loading, error }: { loading: boolean; error: string | null }
 const Results = ({ result, onReset }: { result: EyeScreeningAnalysisOutput | null; onReset: () => void }) => {
   if (!result) return <p>No results to display.</p>;
   
-  const getStatus = (analysis: string): {label: string, color: string, icon: React.ReactNode} => {
+  const getStatus = (analysis: string): {label: string, color: string, icon: React.ReactNode, severity: number } => {
     const lowerAnalysis = analysis.toLowerCase();
     if (lowerAnalysis.includes('severe') || lowerAnalysis.includes('advanced')) {
-      return { label: 'Advanced Changes', color: 'text-red-500', icon: <XCircle className="h-6 w-6 text-red-500" /> };
+      return { label: 'Advanced', color: 'text-red-500', icon: <XCircle className="h-6 w-6 text-red-500" />, severity: 3 };
+    }
+    if (lowerAnalysis.includes('moderate')) {
+        return { label: 'Moderate', color: 'text-orange-500', icon: <AlertTriangle className="h-6 w-6 text-orange-500" />, severity: 2 };
     }
     if (lowerAnalysis.includes('mild') || lowerAnalysis.includes('early')) {
-      return { label: 'Mild Changes', color: 'text-amber-500', icon: <AlertTriangle className="h-6 w-6 text-amber-500" /> };
+      return { label: 'Mild', color: 'text-amber-500', icon: <AlertTriangle className="h-6 w-6 text-amber-500" />, severity: 1 };
     }
     if (lowerAnalysis.includes('no sign') || lowerAnalysis.includes('normal')) {
-      return { label: 'Normal', color: 'text-green-500', icon: <CheckCircle className="h-6 w-6 text-green-500" /> };
+      return { label: 'Normal', color: 'text-green-500', icon: <CheckCircle className="h-6 w-6 text-green-500" />, severity: 0 };
     }
-    return { label: 'Analysis Complete', color: 'text-muted-foreground', icon: <Eye className="h-6 w-6 text-muted-foreground" /> };
+    return { label: 'Analysis Complete', color: 'text-muted-foreground', icon: <Eye className="h-6 w-6 text-muted-foreground" />, severity: 0 };
   }
 
   const leftEyeStatus = getStatus(result.leftEyeAnalysis);
   const rightEyeStatus = getStatus(result.rightEyeAnalysis);
+  
+  const chartData = [
+    { eye: 'Left Eye', severity: leftEyeStatus.severity, fill: 'var(--color-left)' },
+    { eye: 'Right Eye', severity: rightEyeStatus.severity, fill: 'var(--color-right)' },
+  ];
+
+  const chartConfig = {
+    severity: { label: 'Severity' },
+    left: { label: 'Left Eye', color: 'hsl(var(--chart-1))' },
+    right: { label: 'Right Eye', color: 'hsl(var(--chart-2))' },
+  };
 
   const handleDownload = () => {
     const reportContent = `
@@ -267,10 +284,10 @@ ${result.recommendations}
 
 Detailed Analysis
 -----------------
-Left Eye Status: ${leftEyeStatus.label}
+Left Eye Status: ${leftEyeStatus.label} (${result.leftEyeAnalysis.includes('not') ? 'No Retinopathy Detected' : 'Retinopathy Detected'})
 ${result.leftEyeAnalysis}
 
-Right Eye Status: ${rightEyeStatus.label}
+Right Eye Status: ${rightEyeStatus.label} (${result.rightEyeAnalysis.includes('not') ? 'No Retinopathy Detected' : 'Retinopathy Detected'})
 ${result.rightEyeAnalysis}
 `;
     const blob = new Blob([reportContent.trim()], { type: 'text/plain' });
@@ -286,19 +303,39 @@ ${result.rightEyeAnalysis}
 
   return (
     <div className="space-y-6">
+       <Card>
+        <CardHeader>
+          <CardTitle className="font-headline text-primary">Condition Severity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={chartConfig} className="h-[200px] w-full">
+            <BarChart accessibilityLayer data={chartData} margin={{ top: 20, left: -20, right: 20 }}>
+              <CartesianGrid vertical={false} />
+              <XAxis dataKey="eye" tickLine={false} tickMargin={10} axisLine={false} />
+              <YAxis domain={[0, 4]} ticks={[0, 1, 2, 3]} tickFormatter={(value) => ['Normal', 'Mild', 'Moderate', 'Advanced'][value]} />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Bar dataKey="severity" radius={8} />
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+
       <div className="grid md:grid-cols-2 gap-6 text-center">
         <Card>
           <CardHeader>
             <CardTitle className="font-headline">Left Eye</CardTitle>
+            <CardDescription>{result.leftEyeAnalysis.includes('not') ? 'No Retinopathy Detected' : 'Retinopathy Detected'}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className={cn("text-2xl font-bold flex items-center justify-center gap-2", leftEyeStatus.color)}>{leftEyeStatus.icon} {leftEyeStatus.label}</div>
             <p className="text-sm text-muted-foreground">{result.leftEyeAnalysis}</p>
+
           </CardContent>
         </Card>
          <Card>
           <CardHeader>
             <CardTitle className="font-headline">Right Eye</CardTitle>
+            <CardDescription>{result.rightEyeAnalysis.includes('not') ? 'No Retinopathy Detected' : 'Retinopathy Detected'}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className={cn("text-2xl font-bold flex items-center justify-center gap-2", rightEyeStatus.color)}>{rightEyeStatus.icon} {rightEyeStatus.label}</div>
@@ -312,13 +349,20 @@ ${result.rightEyeAnalysis}
         <CardContent><p>{result.summary}</p></CardContent>
       </Card>
       
-      <Card>
-        <CardHeader><CardTitle className="font-headline text-primary">Personalized Recommendations</CardTitle></CardHeader>
-        <CardContent><p>{result.recommendations}</p></CardContent>
+      <Card className="bg-primary/5 border-primary/20">
+        <CardHeader>
+          <CardTitle className="font-headline text-primary flex items-center gap-2">
+            <Lightbulb />
+            Personalized Recommendations
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="whitespace-pre-line">{result.recommendations}</p>
+        </CardContent>
       </Card>
 
-      <div className="flex flex-wrap gap-4 justify-center">
-        <Button onClick={handleDownload}><Download className="mr-2 h-4 w-4" /> Download Report</Button>
+      <div className="flex flex-wrap gap-4 justify-center pt-4">
+        <Button onClick={handleDownload}><Download className="mr-2 h-4 w-4" /> Download Full Report</Button>
         <Button variant="outline">Find Specialists</Button>
         <Button variant="outline">Set Reminders</Button>
         <Button variant="secondary" onClick={onReset}><RefreshCw className="mr-2 h-4 w-4" /> Start New Screening</Button>

@@ -30,12 +30,12 @@ const EyeScreeningAnalysisInputSchema = z.object({
 export type EyeScreeningAnalysisInput = z.infer<typeof EyeScreeningAnalysisInputSchema>;
 
 const EyeScreeningAnalysisOutputSchema = z.object({
-  leftEyeAnalysis: z.string().describe('Analysis results for the left eye.'),
-  rightEyeAnalysis: z.string().describe('Analysis results for the right eye.'),
+  leftEyeAnalysis: z.string().describe('Analysis results for the left eye, indicating if retinopathy exists or not.'),
+  rightEyeAnalysis: z.string().describe('Analysis results for the right eye, indicating if retinopathy exists or not.'),
   summary: z.string().describe('A summary of the eye screening results.'),
   recommendations: z
     .string()
-    .describe('Personalized recommendations based on the analysis.'),
+    .describe('Personalized lifestyle, diet, and monitoring recommendations based on the analysis. Avoid generic advice like "see a doctor". Focus on actionable steps.'),
 });
 export type EyeScreeningAnalysisOutput = z.infer<typeof EyeScreeningAnalysisOutputSchema>;
 
@@ -49,11 +49,13 @@ const prompt = ai.definePrompt({
   name: 'eyeScreeningAnalysisPrompt',
   input: {schema: EyeScreeningAnalysisInputSchema},
   output: {schema: EyeScreeningAnalysisOutputSchema},
-  prompt: `You are an expert ophthalmologist specializing in diabetic retinopathy screening.
+  prompt: `You are an expert ophthalmologist AI specializing in diabetic retinopathy screening.
 
-You will analyze the provided images of the patient's eyes and provide a summary of your findings, checking for early signs of diabetic retinopathy.
+Analyze the provided images of the patient's eyes for early signs of diabetic retinopathy. Determine if retinopathy exists or not for each eye.
 
-Provide a detailed analysis for each eye, and a summary of the overall findings, along with personalized recommendations.
+Provide a detailed analysis for each eye, a summary of the overall findings, and personalized recommendations.
+
+The recommendations should be actionable and focus on lifestyle, diet, and self-monitoring. For example, suggest blood sugar management techniques, specific dietary changes (e.g., leafy greens, omega-3s), and a schedule for future self-screenings. DO NOT simply say "consult a doctor".
 
 User Description: {{{userDescription}}}
 Left Eye Photo: {{media url=leftEyePhotoDataUri}}
