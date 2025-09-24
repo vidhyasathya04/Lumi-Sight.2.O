@@ -32,11 +32,11 @@ export default function OnboardingPage() {
       case 1:
         return <WelcomeStep key="step1" onComplete={nextStep} />;
       case 2:
-        return <MainFeaturesPage key="step2" onComplete={nextStep} />;
+        return <LanguageSelection key="step2" onComplete={nextStep} />;
       case 3:
-        return <UserTypeSelection key="step3" onComplete={nextStep} />;
+        return <MainFeaturesPage key="step3" onComplete={nextStep} />;
       case 4:
-        return <LanguageSelection key="step4" onComplete={nextStep} />;
+        return <UserTypeSelection key="step4" onComplete={nextStep} />;
       case 5:
         return <RegistrationForm key="step5" />;
       default:

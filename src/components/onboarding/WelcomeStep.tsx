@@ -67,11 +67,11 @@ export default function WelcomeStep({ onComplete }: WelcomeStepProps) {
           variants={itemVariants}
           className="mt-4 text-xl md:text-2xl font-headline font-bold text-gray-800"
         >
-          The first-ever app to help patients with chronic diseases.
+          The first-ever app dedicated to helping patients with chronic diseases.
         </motion.h2>
 
         <motion.p variants={itemVariants} className="mt-4 text-lg text-muted-foreground">
-          Start your health journey now.
+          Start your health journey now. Choose your language to begin.
         </motion.p>
 
         <motion.div
