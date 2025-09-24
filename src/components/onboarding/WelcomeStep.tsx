@@ -9,25 +9,73 @@ interface WelcomeStepProps {
 }
 
 export default function WelcomeStep({ onComplete }: WelcomeStepProps) {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const titleVariants = {
+    hidden: { y: -100, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 100,
+        damping: 10,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 100,
+      },
+    },
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-green-50">
-      <motion.div 
+      <motion.div
         className="text-center p-8 flex flex-col items-center"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
       >
-        <Logo className="h-24 w-24 text-primary" />
+        <motion.div variants={itemVariants}>
+            <Logo className="h-24 w-24 text-primary" />
+        </motion.div>
         
-        <h1 className="mt-6 text-4xl md:text-5xl font-headline font-bold text-gray-800">
+        <motion.h1 
+          variants={titleVariants}
+          className="mt-6 text-5xl md:text-6xl font-headline font-bold text-primary">
+          LumiSight
+        </motion.h1>
+        
+        <motion.h2 
+          variants={itemVariants}
+          className="mt-4 text-xl md:text-2xl font-headline font-bold text-gray-800"
+        >
           Chronic Disease – First-ever App to Help Patients
-        </h1>
+        </motion.h2>
 
-        <p className="mt-4 text-lg text-muted-foreground">
+        <motion.p variants={itemVariants} className="mt-4 text-lg text-muted-foreground">
           Start your health journey now.
-        </p>
+        </motion.p>
 
         <motion.div
+          variants={itemVariants}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="mt-10"
