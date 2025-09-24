@@ -234,18 +234,55 @@ const Analysis = ({ loading, error }: { loading: boolean; error: string | null }
 const Results = ({ result, onReset }: { result: EyeScreeningAnalysisOutput | null; onReset: () => void }) => {
   if (!result) return <p>No results to display.</p>;
   
-  const getStatus = (analysis: string): {label: string, color: string, icon: any} => {
-    if (analysis.toLowerCase().includes('mild') || analysis.toLowerCase().includes('early')) {
-      return { label: 'Mild Changes', color: 'text-amber-500', icon: <AlertTriangle className="h-6 w-6 text-amber-500" /> };
-    }
-    if (analysis.toLowerCase().includes('severe') || analysis.toLowerCase().includes('advanced')) {
+  const getStatus = (analysis: string): {label: string, color: string, icon: React.ReactNode} => {
+    const lowerAnalysis = analysis.toLowerCase();
+    if (lowerAnalysis.includes('severe') || lowerAnalysis.includes('advanced')) {
       return { label: 'Advanced Changes', color: 'text-red-500', icon: <XCircle className="h-6 w-6 text-red-500" /> };
     }
-    return { label: 'Normal', color: 'text-green-500', icon: <CheckCircle className="h-6 w-6 text-green-500" /> };
+    if (lowerAnalysis.includes('mild') || lowerAnalysis.includes('early')) {
+      return { label: 'Mild Changes', color: 'text-amber-500', icon: <AlertTriangle className="h-6 w-6 text-amber-500" /> };
+    }
+    if (lowerAnalysis.includes('no sign') || lowerAnalysis.includes('normal')) {
+      return { label: 'Normal', color: 'text-green-500', icon: <CheckCircle className="h-6 w-6 text-green-500" /> };
+    }
+    return { label: 'Analysis Complete', color: 'text-muted-foreground', icon: <Eye className="h-6 w-6 text-muted-foreground" /> };
   }
 
   const leftEyeStatus = getStatus(result.leftEyeAnalysis);
   const rightEyeStatus = getStatus(result.rightEyeAnalysis);
+
+  const handleDownload = () => {
+    const reportContent = `
+LumiSight AI Eye Screening Report
+=================================
+Date: ${new Date().toLocaleString()}
+
+Overall Summary
+-----------------
+${result.summary}
+
+Recommendations
+-----------------
+${result.recommendations}
+
+Detailed Analysis
+-----------------
+Left Eye Status: ${leftEyeStatus.label}
+${result.leftEyeAnalysis}
+
+Right Eye Status: ${rightEyeStatus.label}
+${result.rightEyeAnalysis}
+`;
+    const blob = new Blob([reportContent.trim()], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'LumiSight-Eye-Screening-Report.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="space-y-6">
@@ -281,7 +318,7 @@ const Results = ({ result, onReset }: { result: EyeScreeningAnalysisOutput | nul
       </Card>
 
       <div className="flex flex-wrap gap-4 justify-center">
-        <Button><Download className="mr-2 h-4 w-4" /> Download Report</Button>
+        <Button onClick={handleDownload}><Download className="mr-2 h-4 w-4" /> Download Report</Button>
         <Button variant="outline">Find Specialists</Button>
         <Button variant="outline">Set Reminders</Button>
         <Button variant="secondary" onClick={onReset}><RefreshCw className="mr-2 h-4 w-4" /> Start New Screening</Button>
