@@ -1,16 +1,16 @@
 export const LANGUAGES = [
   'English',
-  'Español (Spanish)',
-  'Français (French)',
-  'Deutsch (German)',
-  '中文 (Chinese)',
-  '日本語 (Japanese)',
-  'Português (Portuguese)',
-  'Русский (Russian)',
-  'العربية (Arabic)',
   'हिंदी (Hindi)',
   'বাংলা (Bengali)',
+  'తెలుగు (Telugu)',
+  'मराठी (Marathi)',
   'தமிழ் (Tamil)',
+  'ગુજરાતી (Gujarati)',
+  'ಕನ್ನಡ (Kannada)',
+  'ଓଡ଼ିଆ (Odia)',
+  'മലയാളം (Malayalam)',
+  'ਪੰਜਾਬੀ (Punjabi)',
+  'اردو (Urdu)',
 ] as const;
 
 export const USER_TYPES = ['Patient', 'Blood Donor', 'Healthcare Provider'] as const;
