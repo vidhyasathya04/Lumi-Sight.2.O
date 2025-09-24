@@ -6,14 +6,15 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CheckCircle, Eye, Lightbulb, Loader2, Video, XCircle, Download, UserCheck, RefreshCw, AlertTriangle, MonitorSmartphone } from 'lucide-react';
+import { CheckCircle, Eye, Lightbulb, Loader2, Upload, XCircle, Download, UserCheck, RefreshCw, AlertTriangle, MonitorSmartphone } from 'lucide-react';
 import { useRef, useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 
-type Step = 'checklist' | 'capture-left' | 'capture-right' | 'analyze' | 'results';
+type Step = 'checklist' | 'upload-left' | 'upload-right' | 'analyze' | 'results';
 const STEPS = {
   checklist: { title: 'Pre-Screening Checklist' },
-  'capture-left': { title: 'Capturing Left Eye' },
-  'capture-right': { title: 'Capturing Right Eye' },
+  'upload-left': { title: 'Uploading Left Eye Image' },
+  'upload-right': { title: 'Uploading Right Eye Image' },
   analyze: { title: 'Analyzing Your Results' },
   results: { title: 'Screening Results' },
 };
@@ -26,13 +27,13 @@ export default function EyeScreeningWorkflow() {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const handleStartCapture = () => setStep('capture-left');
+  const handleStartUpload = () => setStep('upload-left');
 
-  const handleCapture = (eye: 'left' | 'right', dataUri: string) => {
+  const handleUpload = (eye: 'left' | 'right', dataUri: string) => {
     setPhotos(p => ({ ...p, [eye]: dataUri }));
     if (eye === 'left') {
-      toast({ title: 'Left eye captured!', description: 'Now, let\'s get your right eye.' });
-      setStep('capture-right');
+      toast({ title: 'Left eye image loaded!', description: 'Now, let\'s get your right eye.' });
+      setStep('upload-right');
     } else {
       setStep('analyze');
     }
@@ -55,7 +56,7 @@ export default function EyeScreeningWorkflow() {
           console.error(e);
           setError('An error occurred during analysis. Please try again.');
           toast({ variant: 'destructive', title: 'Analysis Failed', description: 'Could not analyze eye photos.' });
-          setStep('capture-right'); // Go back to allow retake
+          setStep('upload-right'); // Go back to allow re-upload
         } finally {
           setIsLoading(false);
         }
@@ -74,17 +75,17 @@ export default function EyeScreeningWorkflow() {
   const renderContent = () => {
     switch (step) {
       case 'checklist':
-        return <Checklist onStart={handleStartCapture} />;
-      case 'capture-left':
-        return <CameraCapture eye="left" onCapture={handleCapture} />;
-      case 'capture-right':
-        return <CameraCapture eye="right" onCapture={handleCapture} />;
+        return <Checklist onStart={handleStartUpload} />;
+      case 'upload-left':
+        return <ImageUpload eye="left" onUpload={handleUpload} />;
+      case 'upload-right':
+        return <ImageUpload eye="right" onUpload={handleUpload} />;
       case 'analyze':
         return <Analysis loading={isLoading} error={error} />;
       case 'results':
         return <Results result={analysisResult} onReset={resetWorkflow} />;
       default:
-        return <Checklist onStart={handleStartCapture} />;
+        return <Checklist onStart={handleStartUpload} />;
     }
   };
 
@@ -113,10 +114,10 @@ export default function EyeScreeningWorkflow() {
 
 const Checklist = ({ onStart }: { onStart: () => void }) => {
   const items = [
-    { icon: MonitorSmartphone, text: 'Ensure good, even lighting.' },
-    { icon: XCircle, text: 'Remove glasses or contact lenses.' },
-    { icon: UserCheck, text: 'Find a stable surface for your phone.' },
-    { icon: Eye, text: 'You will need about 3-5 minutes.' },
+    { icon: MonitorSmartphone, text: 'Use a clear, well-lit photo of your eye.' },
+    { icon: XCircle, text: 'Ensure the image is not blurry.' },
+    { icon: UserCheck, text: 'Make sure no reflections obscure the view.' },
+    { icon: Eye, text: 'You will need photos of both your left and right eye.' },
   ];
   return (
     <div className="space-y-6 text-center">
@@ -132,7 +133,7 @@ const Checklist = ({ onStart }: { onStart: () => void }) => {
         <CardContent className="pt-6 flex items-center gap-4">
           <Lightbulb className="h-8 w-8 text-accent-foreground" />
           <p className="text-sm font-semibold">
-            AI Tip: For best results, sit about 2 feet from a window during daytime.
+            AI Tip: For best results, use a recent, high-resolution photo taken in good lighting.
           </p>
         </CardContent>
       </Card>
@@ -141,63 +142,71 @@ const Checklist = ({ onStart }: { onStart: () => void }) => {
   );
 };
 
-const CameraCapture = ({ eye, onCapture }: { eye: 'left' | 'right'; onCapture: (eye: 'left' | 'right', dataUri: string) => void }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [stream, setStream] = useState<MediaStream | null>(null);
+const ImageUpload = ({ eye, onUpload }: { eye: 'left' | 'right'; onUpload: (eye: 'left' | 'right', dataUri: string) => void }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const startCamera = useCallback(async () => {
-    try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 4 * 1024 * 1024) { // 4MB limit
+        setError("File is too large. Please select an image smaller than 4MB.");
+        setPreview(null);
+        return;
       }
-      setStream(mediaStream);
-    } catch (err) {
-      console.error("Camera error:", err);
-      setError("Could not access camera. Please check permissions and try again.");
+      setError(null);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }, []);
+  };
 
-  useEffect(() => {
-    startCamera();
-    return () => {
-      stream?.getTracks().forEach(track => track.stop());
-    };
-  }, [startCamera, stream]);
-
-  const handleCaptureClick = () => {
-    if (videoRef.current && canvasRef.current) {
-      const context = canvasRef.current.getContext('2d');
-      if (context) {
-        canvasRef.current.width = videoRef.current.videoWidth;
-        canvasRef.current.height = videoRef.current.videoHeight;
-        context.drawImage(videoRef.current, 0, 0);
-        const dataUri = canvasRef.current.toDataURL('image/jpeg');
-        onCapture(eye, dataUri);
-      }
+  const handleConfirm = () => {
+    if (preview) {
+      onUpload(eye, preview);
+    } else {
+      setError("Please select an image first.");
     }
   };
 
   return (
     <div className="flex flex-col items-center gap-4">
       <p className="text-lg text-muted-foreground">
-        Hold your phone steady and look directly at the camera with your <span className="font-bold text-primary">{eye} eye</span>.
+        Please upload a clear photo of your <span className="font-bold text-primary">{eye} eye</span>.
       </p>
-      <div className="relative w-full max-w-md aspect-video bg-muted rounded-lg overflow-hidden">
-        <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
-        <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-32 h-32 border-4 border-dashed border-green-400 rounded-full animate-pulse flex items-center justify-center">
-                 <div className="w-4 h-4 bg-green-400 rounded-full" />
-            </div>
-        </div>
+      <div 
+        className="relative w-full max-w-md aspect-video bg-muted rounded-lg overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-primary"
+        onClick={() => inputRef.current?.click()}
+      >
+        {preview ? (
+          <Image src={preview} alt={`${eye} eye preview`} layout="fill" objectFit="contain" />
+        ) : (
+          <div className="text-center text-muted-foreground">
+            <Upload className="h-12 w-12 mx-auto" />
+            <p>Click to browse or drag & drop</p>
+            <p className="text-xs">PNG, JPG, WEBP up to 4MB</p>
+          </div>
+        )}
       </div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/png, image/jpeg, image/webp"
+        className="hidden"
+        onChange={handleFileChange}
+      />
       {error && <p className="text-destructive text-sm">{error}</p>}
-      <Button size="lg" onClick={handleCaptureClick} disabled={!stream}>
-        <Video className="mr-2 h-5 w-5" /> Capture {eye.charAt(0).toUpperCase() + eye.slice(1)} Eye
-      </Button>
-      <canvas ref={canvasRef} className="hidden" />
+      <div className="flex gap-4">
+        <Button size="lg" variant="outline" onClick={() => inputRef.current?.click()}>
+          <Upload className="mr-2 h-5 w-5" /> Change Photo
+        </Button>
+        <Button size="lg" onClick={handleConfirm} disabled={!preview}>
+          <CheckCircle className="mr-2 h-5 w-5" /> Confirm and Continue
+        </Button>
+      </div>
     </div>
   );
 };
