@@ -14,31 +14,27 @@ import {
 import {
   LayoutDashboard,
   Eye,
-  HandHeart,
+  HeartPulse,
   MessageCircle,
-  Trophy,
-  Hospital,
+  Users,
   User,
   LogOut
 } from 'lucide-react';
 import { Logo } from '../icons/logo';
 import { useUser } from '@/context/UserContext';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/dashboard/eye-screening', label: 'Eye Screening', icon: Eye },
-  { href: '/dashboard/donate-blood', label: 'Donate Blood', icon: HandHeart },
+  { href: '/dashboard/donate-blood', label: 'Donate Blood', icon: HeartPulse },
   { href: '/dashboard/health-ai', label: 'Ask Health AI', icon: MessageCircle },
-  { href: '/dashboard/community', label: 'Community', icon: Trophy },
+  { href: '/dashboard/community', label: 'Community', icon: Users },
   { href: '/dashboard/profile', label: 'Profile', icon: User },
 ];
 
 export default function AppSidebar() {
   const pathname = usePathname();
   const { user, setUser } = useUser();
-  const avatar = PlaceHolderImages.find(img => img.id === 'user-avatar-1');
 
   const handleLogout = () => {
     setUser(null);

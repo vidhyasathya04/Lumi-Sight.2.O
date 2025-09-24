@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import StatCard from './StatCard';
-import { Award, Calendar, Eye, Users } from 'lucide-react';
+import { Award, Calendar, Eye, Users, HeartPulse } from 'lucide-react';
 import EmergencyRequestCard from './EmergencyRequestCard';
 import Link from 'next/link';
 
@@ -19,7 +19,7 @@ export default function DonorDashboard() {
           <StatCard
             title="Donations"
             value="4 times"
-            icon="💝"
+            icon={HeartPulse}
             footer="Last: 3mo"
             color="bg-primary"
           />

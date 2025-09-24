@@ -3,7 +3,7 @@
 import { useUser } from '@/context/UserContext';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { AlarmClock, Eye, HandHeart, Hospital, MessageCircle } from 'lucide-react';
+import { AlarmClock, Eye, HandHeart, Hospital, MessageCircle, HeartPulse, ShieldCheck } from 'lucide-react';
 import StatCard from './StatCard';
 import Link from 'next/link';
 
@@ -39,14 +39,14 @@ export default function PatientDashboard() {
           <StatCard
             title="Blood Type"
             value={user?.bloodGroup || 'N/A'}
-            icon={HandHeart}
+            icon={HeartPulse}
             footer={`Donor: ${user?.willingToDonateBlood || 'N/A'}`}
             color="bg-red-500"
           />
           <StatCard
             title="Health Score"
             value="850/1000"
-            icon="🏆"
+            icon={ShieldCheck}
             footer="Health Champion"
             color="bg-amber-500"
           />
