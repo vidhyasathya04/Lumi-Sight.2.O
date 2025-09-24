@@ -1,3 +1,4 @@
+
 'use client';
 
 import { eyeScreeningAnalysis, type EyeScreeningAnalysisOutput } from '@/ai/flows/eye-screening-analysis';
@@ -9,8 +10,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle, Eye, Lightbulb, Loader2, Upload, XCircle, Download, UserCheck, RefreshCw, AlertTriangle, MonitorSmartphone } from 'lucide-react';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from 'recharts';
-import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis, Legend } from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
 
 type Step = 'checklist' | 'upload-left' | 'upload-right' | 'analyze' | 'results';
