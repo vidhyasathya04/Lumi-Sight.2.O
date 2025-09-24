@@ -49,13 +49,20 @@ export default function EyeScreeningWorkflow() {
         setIsLoading(true);
         setError(null);
         try {
-          const result = await eyeScreeningAnalysis({
-            leftEyePhotoDataUri: photos.left!,
-            rightEyePhotoDataUri: photos.right!,
-            userDescription: "User is performing a self-screening for diabetic retinopathy."
-          });
-          setAnalysisResult(result);
+          // MOCK DATA FOR DEMONSTRATION
+          const mockResult: EyeScreeningAnalysisOutput = {
+            leftEyeAnalysis: 'Analysis of the left eye shows early signs of mild diabetic retinopathy, including a few microaneurysms.',
+            rightEyeAnalysis: 'Analysis of the right eye shows no signs of diabetic retinopathy. The retina appears healthy and normal.',
+            summary: 'The AI screening has detected early signs of mild diabetic retinopathy in your left eye, while your right eye appears to be normal. This suggests that some changes related to diabetes may be starting to affect the blood vessels in your left eye.',
+            recommendations: '1. Schedule an appointment with an ophthalmologist for a comprehensive eye exam within the next 3-6 months.\n2. Focus on maintaining stable blood sugar levels as recommended by your doctor.\n3. Incorporate foods rich in omega-3 fatty acids, like fish and walnuts, into your diet.\n4. Perform this AI screening again in 6 months to monitor for any changes.'
+          };
+
+          // Simulate network delay
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          setAnalysisResult(mockResult);
           setStep('results');
+
         } catch (e) {
           console.error(e);
           setError('An error occurred during analysis. Please try again.');
@@ -259,14 +266,14 @@ const Results = ({ result, onReset }: { result: EyeScreeningAnalysisOutput | nul
   const rightEyeStatus = getStatus(result.rightEyeAnalysis);
   
   const chartData = [
-    { eye: 'Left Eye', severity: leftEyeStatus.severity, fill: 'var(--color-left)' },
-    { eye: 'Right Eye', severity: rightEyeStatus.severity, fill: 'var(--color-right)' },
+    { eye: 'Left Eye', severity: leftEyeStatus.severity, fill: 'hsl(var(--chart-2))' },
+    { eye: 'Right Eye', severity: rightEyeStatus.severity, fill: 'hsl(var(--chart-1))' },
   ];
 
   const chartConfig = {
     severity: { label: 'Severity' },
-    left: { label: 'Left Eye', color: 'hsl(var(--chart-1))' },
-    right: { label: 'Right Eye', color: 'hsl(var(--chart-2))' },
+    left: { label: 'Left Eye', color: 'hsl(var(--chart-2))' },
+    right: { label: 'Right Eye', color: 'hsl(var(--chart-1))' },
   };
 
   const handleDownload = () => {
@@ -302,7 +309,7 @@ a.click();
     URL.revokeObjectURL(url);
   };
 
-  const severityLevels = ['Normal', 'Mild', 'Moderate', 'Advanced', 'Severe'];
+  const severityLevels = ['Normal', 'Mild', 'Moderate', 'Advanced'];
 
   return (
     <div className="space-y-6">
@@ -313,9 +320,9 @@ a.click();
         <CardContent>
           <ChartContainer config={chartConfig} className="h-[200px] w-full">
             <BarChart accessibilityLayer data={chartData} margin={{ top: 20, left: -20, right: 20 }}>
-              <CartesianGrid vertical={true} horizontal={true} />
+              <CartesianGrid vertical={false} />
               <XAxis dataKey="eye" tickLine={false} tickMargin={10} axisLine={false} />
-              <YAxis domain={[0, 4]} ticks={[0, 1, 2, 3]} tickFormatter={(value) => severityLevels[value]} />
+              <YAxis domain={[0, 3]} ticks={[0, 1, 2, 3]} tickFormatter={(value) => severityLevels[value]} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="severity" radius={8}>
                 {chartData.map((entry, index) => (
@@ -365,7 +372,7 @@ a.click();
         </CardHeader>
         <CardContent>
           <p className="whitespace-pre-line">{result.recommendations}</p>
-        </CardContent>
+        </CardContent>.
       </Card>
 
       <div className="flex flex-wrap gap-4 justify-center pt-4">
@@ -377,3 +384,5 @@ a.click();
     </div>
   );
 };
+
+    
