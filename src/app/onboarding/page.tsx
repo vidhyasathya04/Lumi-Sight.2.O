@@ -2,26 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import { useUser } from '@/context/UserContext';
-import UserTypeSelection from '@/components/onboarding/UserType-selection';
+import UserTypeSelection from '@/components/onboarding/UserTypeSelection';
 import RegistrationForm from '@/components/onboarding/RegistrationForm';
 import { AnimatePresence, motion } from 'framer-motion';
 import WelcomeStep from '@/components/onboarding/WelcomeStep';
 import { useRouter } from 'next/navigation';
 
 export default function OnboardingPage() {
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
   const router = useRouter();
 
-  // Always start at the welcome step for a new session.
   const [step, setStep] = useState(1);
 
-  // If a user profile is complete, redirect to dashboard.
   useEffect(() => {
-    if (user?.name && user?.userType) {
+    if (!isLoading && user?.name && user?.userType) {
       router.replace('/dashboard');
     }
-  }, [user, router]);
-
+  }, [user, isLoading, router]);
 
   const nextStep = () => setStep(s => s + 1);
 
@@ -34,9 +31,15 @@ export default function OnboardingPage() {
       case 3:
         return <RegistrationForm key="step3" />;
       default:
-        return <WelcomeStep key="step1" onComplete={nextStep} />;
+        // If there's a user, go to registration, otherwise start over.
+        return user ? <RegistrationForm key="step3" /> : <WelcomeStep key="step1" onComplete={nextStep} />;
     }
   };
+  
+    if (isLoading) {
+    return null;
+  }
+
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-background p-4 overflow-hidden">
