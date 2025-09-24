@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "user-avatar-1",
+      "description": "User avatar",
+      "imageUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwcm9maWxlJTIwcGljdHVyZXxlbnwwfHx8fDE3NTg3MDMwNjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "profile picture"
+    },
+    {
+      "id": "user-avatar-2",
+      "description": "Another user avatar",
+      "imageUrl": "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwcm9maWxlJTIwcGljdHVyZXxlbnwwfHx8fDE3NTg3MDMwNjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "profile picture"
+    },
+    {
+      "id": "user-avatar-3",
+      "description": "Third user avatar",
+      "imageUrl": "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwcm9maWxlJTIwcGljdHVyZXxlbnwwfHx8fDE3NTg3MDMwNjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "profile picture"
+    },
+    {
+      "id": "hospital-apollo",
+      "description": "Picture of Apollo hospital",
+      "imageUrl": "https://images.unsplash.com/photo-1586773860383-dab5f3bc1bcc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxob3NwaXRhbCUyMGJ1aWxkaW5nfGVufDB8fHx8MTc1ODY4NjQyOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hospital building"
+    },
+    {
+      "id": "achievement-badge",
+      "description": "Blood hero achievement badge",
+      "imageUrl": "https://images.unsplash.com/photo-1706340674031-acaaf6e2144b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxiYWRnZSUyMGF3YXJkfGVufDB8fHx8MTc1ODYzOTY3Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "badge award"
+    },
+    {
+      "id": "community-banner",
+      "description": "Banner for community hub",
+      "imageUrl": "https://images.unsplash.com/photo-1660176982561-0d9e8705877d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb21tdW5pdHklMjBncm91cHxlbnwwfHx8fDE3NTg2NjMwNTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "community group"
+    }
+  ]
 }
