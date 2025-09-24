@@ -35,6 +35,12 @@
       "description": "Banner for community hub",
       "imageUrl": "https://images.unsplash.com/photo-1660176982561-0d9e8705877d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb21tdW5pdHklMjBncm91cHxlbnwwfHx8fDE3NTg2NjMwNTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "community group"
+    },
+    {
+      "id": "map-static",
+      "description": "Static map background",
+      "imageUrl": "https://images.unsplash.com/photo-1599947549338-23c3b1e42562?q=80&w=2544&auto=format&fit=crop",
+      "imageHint": "city map"
     }
   ]
 }

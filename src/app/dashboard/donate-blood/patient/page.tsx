@@ -1,7 +1,7 @@
 'use client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Droplet, History, Mic, PlusCircle, Send, ShieldCheck, User } from "lucide-react";
+import { Calendar, Droplet, History, Mic, PlusCircle, User } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUser } from "@/context/UserContext";
@@ -10,6 +10,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { HealthStatCard } from "@/components/blood-donation/HealthStatCard";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import SosRequestFlow from "@/components/blood-donation/SosRequestFlow";
 
 function SchedulingTab() {
     return (
@@ -94,6 +97,11 @@ function AiAssistantTab() {
 export default function PatientDashboardPage() {
     const { user } = useUser();
     const avatarImage = PlaceHolderImages.find(p => p.id === 'user-avatar-2');
+    const [isRequestingSos, setIsRequestingSos] = useState(false);
+
+    if (isRequestingSos) {
+        return <SosRequestFlow onCancel={() => setIsRequestingSos(false)} />;
+    }
 
     return (
         <div className="container mx-auto py-8">
@@ -126,9 +134,28 @@ export default function PatientDashboardPage() {
                 </CardHeader>
                 <CardContent className="flex flex-col md:flex-row items-center gap-4">
                     <p className="flex-grow">Press this button to instantly notify nearby donors of your emergency need.</p>
-                    <Button size="lg" variant="destructive" className="bg-white text-red-600 hover:bg-white/90 font-bold text-lg w-full md:w-auto">
-                        SEND SOS REQUEST
-                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button size="lg" variant="destructive" className="bg-white text-red-600 hover:bg-white/90 font-bold text-lg w-full md:w-auto">
+                            SEND SOS REQUEST
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Confirm Emergency SOS</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will send an alert to all available donors in a 5km radius.
+                            Please confirm this is a genuine emergency.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => setIsRequestingSos(true)} className="bg-red-600 hover:bg-red-700">
+                            Confirm & Send Alert
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                 </CardContent>
             </Card>
 
