@@ -55,7 +55,7 @@ export default function MainFeaturesPage({ onComplete }: MainFeaturesPageProps) 
           Chronic Disease
         </motion.h2>
         <motion.p variants={itemVariants} className="mt-4 text-lg text-muted-foreground">
-          This is the first-ever chronic disease helping app.
+          The first-ever app dedicated to helping patients with chronic diseases.
         </motion.p>
         
         <motion.div variants={itemVariants} className="mt-10">
